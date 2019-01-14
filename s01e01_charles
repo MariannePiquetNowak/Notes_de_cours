@@ -1,4 +1,4 @@
-14.01.2018 // 1er cours O'Clock
+#14.01.2018 // 1er cours O'Clock
 
 -----------------------------------------------------------------
 
@@ -34,16 +34,16 @@ Dossier HTML en raccourci sur le bureau == Racine de notre serveur.
 Tous les éléments dans le dossier HTML sont accessibles dans le navigateur depuis :
     localhost/chemin_vers_le_fichier << localhost == racine serveur
 
-GitHub :
+##GitHub :
     README.md > S'affiche automatiquement en résumé du dépot
 
-Dossier HTML :
+##Dossier HTML :
     Ne pas oublier les permissions pour les nouveaux dossier sur le serveur.
 
-APACHE :
+##APACHE :
     Cherche automatiquement index.html quand on ouvre un dossier HTML.
 
-VSC :
+##VSC :
     Ouvrir un dossier :
         Ctrl K > Ctrl O
     Ouvrir un fichier :
@@ -51,13 +51,13 @@ VSC :
 
     /!\ Pastille d'onglet en forme de point si fichier non sauvegardé 
 
-GIT :
+##GIT :
     Outil installé sur le téléporteur et manipulé via le terminal
     C'est une forme de SVN (à chercher)
     - Sert à partager du code et versionner du code
     GIT enregistre des commits (photo du code à l'instant t) pour suivre l'historique du développement.
 
-BASH :
+##BASH :
     Equivalent BASH sous Windows :
         - Cygwin
     Chemin vers HTML : Accès depuis `Bureau`
