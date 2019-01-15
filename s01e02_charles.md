@@ -133,6 +133,7 @@ h1 {
 ```
 
 > Les règles CSS sont lues avant le contenu. 
+> Attention ! les ";" sont obligatoires.
 
 * __/!\ class & id servent à faire des références en CSS__
     * #nom_id == pour un id
