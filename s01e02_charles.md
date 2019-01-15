@@ -131,7 +131,7 @@ h1 {
     font-weight: 200;
 }
 ```
-
+> Attention ! le ";" est OBLIGATOIRE.
 > Les règles CSS sont lues avant le contenu. 
 
 * __/!\ class & id servent à faire des références en CSS__
