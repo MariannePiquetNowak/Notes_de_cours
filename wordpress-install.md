@@ -269,8 +269,6 @@ On peut voir qu'il y a un fichier `index.php` contenant un commentaire "silence 
 En tant que développeur, on aura juste à modifier `wp-config.php`, `.htaccess` et le dossier `wp-content`. tout le reste est seulement pour le bon fonctionnement du coeur de wordpress. 
 
 
-
-
 #### Composer : téléchargement du repo wordpress
 
 Alors pour commencer, on va tout effacer SAUF `.htaccess`, `wp-config.php` et l'`index.php` qui est à la racine
@@ -310,7 +308,6 @@ Cela nous génère de nouveau nos dossiers, MAIS le dossier /wordpress/ est dés
 
 Alors après, vous pouvez laisser /wordpress/ comme nom de dossier. Mais /wp/ ça fait plus joli dans l'URL. Si vosu préférez /wordpress/, n'oubliez pas de modifier vos redirections.
 
-
 #### Problème de langage 
 
 Si jamais vous avez des soucis de choix de langue : par exemple, après avoir installer mon package, mon administration wordpress est revenu en anglais, et là, impossible de re-changer la langue :scream: 
@@ -323,6 +320,106 @@ Et hop, ça refonctionne !
 
 Lien de la technique : https://www.youtube.com/watch?v=V2a2CDC7F9Y
 
+#### Clé de salage et fichier Sample
+
+- Les clés de salage
+
+En parcourant votre fichier `wp-config.php`, vous avez dû remarqué ces lignes de code : 
+
+```
+define('AUTH_KEY',         '! sq2r=7r5a!W?@CLro+-%;uP]3$B1|lX);|]<|;5CknYEn9T1-K(eT_`.oEG?7B');
+define('SECURE_AUTH_KEY',  '(++izkoZTK>$5v$YAp+d<O`Z)DV3Of?Spb|T?#4+*yt#y$a:v-A/:3N=p$Djm[%+');
+define('LOGGED_IN_KEY',    'Xt),~h.-in?.%El~,UJXqJB7K[[+6*|!G&8bl9N$$K&k($d`K:|+o;fH7N!F H+W');
+define('NONCE_KEY',        'J_Rr>SoL/8|:,+}290U}eYuH~u|oK1A0*+ur0:&aiOn,Q7!Hs+ck%(,b*%#Z%q1W');
+define('AUTH_SALT',        '$-kaI-S,l7]>MvtMZ$>@3q-@^V}+T<w,8@!+0)pCS_@`QEw`t1VP%z% }|J[efA`');
+define('SECURE_AUTH_SALT', '8QM:$]2/e!+nJSlIeL^YW}JVY|ku@E&+J9+$L-A9G^}dV]rn[:=iI)b4+qhq|dX0');
+define('LOGGED_IN_SALT',   '#|XGgh/IiI1*_P=l`qMkF2fQYyU!XLc{A0 NY&1PMB.h,sE6Wme_]m%T!]Y#HL|,');
+define('NONCE_SALT',       'Hb:g>^y2FA<*m42swM9]oU6%-LY]:4Jv[-uK[`T|QC[Y)}o43z`yd6J!jGBcVS@T');
+```
+
+Kécécé ? Ce sont des clés de salage, elles sont uniques et servent à l'authentification sur notre site. A chaque fois que vous les changerez, cela nettoyera nos cookies et vous serez amené à vous reconnecté. Je vous conseille de les changer tout de suite comme ça, vous n'aurez plus à le faire par la suite (le lien de ces clés se trouve dans les commentaires du fichier)
+
+- Le fichier `wp-config-sample.php`
+
+Entre autre, c'est un brouillon de notre `wp-config.php` avec zéro info de notre identification. Comme ça, lorsque vous souhaiterez redémarrer un projet wordpress, vous n'aurez qu'à le récupérer et le remplir (vous le trouverez dans cette branche du repo github).
+
+#### Le fichier .gitignore 
+
+Créons à la racine un fichier `.gitignore`, il nous sert à ne pas versionner certains de nos fichiers sur notre Github.
+Vous l'aurez compris, il y a des fichiers à risque, principalement notre `wp-config.php` qui contient les informations relatives à notre base de données. 
+Mais aussi nos dossier `/wp/` et `/vendor/` qui sont lourd et seront de toute façon re-téléchargeable grâce à notre `composer.json` => commande `composer install` pour tout récupérer. 
+
+#### Modifier nos thèmes 
+
+Bon, pour modifier nos thème, il faudrait aller dans `/wp/` qui n'est pas versionné. C'est déconnant.
+
+Pour ça, il nous faut un dossier qui regroupe nos thèmes et nos plugins, que l'on pourrait versionné tranquillou. 
+
+On créé un dossier `/content/` à la racine et on y couper/coller les dossiers `/plugins/`, `/languages/` et `/themes/` de `/wp/wp-content/`.
+
+*C'est bien beau, mais Wordpress va quand même chercher nos fichier dans `/wp/wp-content`...*
+
+C'est pas faux *t'as pas compris ?* donc dans `wp-config.php`, on ajoute ces 2 contantes : 
+
+```
+// Indique à Wordpress l'url du dossier content
+define( 'WP_CONTENT_URL', 'http://localhost/mon-url-à-remplacer/content');
+// Indique à WP le chemin du dossier content (sur le disque dur)
+define( 'WP_CONTENT_DIR', dirname(__FILE__) . '/content' ); 
+```
+
+Donc permettent de dire à Wordpress d'aller chercher les fichiers dans le `/content/` que nous avons créé. 
+Wordpress est isolé en tant que librairie dans le dossier /content/
+
+Source : https://codex.wordpress.org/fr:Modifier_wp-config.php#D.C3.A9placer_le_R.C3.A9pertoire_wp-content
 
 
+#### Un peu de ménage ? 
 
+On est là pour faire nos propre thèmes et nos propres plugins non ? Finalement, on a pas besoin des fichiers thème et plugin propre à WP. 
+Si vous n'avez pas l'intention de les utiliser, effacez les, sauf le thème twentynineteen et le plugin hello-dolly
+
+Si vous avez tout effacé par erreur, pas de panique : https://wpackagist.org/
+
+*packagist.org est le site référentiel de packages propre aux dévelopeurs PHP et wpackagist.org, propre aux développeurs Wordpress*
+
+Pour utiliser ses repos, on déclare à Composer l'existance de wpackagist dans `composer.json` 
+
+```
+"repositories":[
+    {
+        "type":"composer",
+        "url":"https://wpackagist.org"
+    }
+],
+```
+
+et pour récupérer le thème : 
+
+```
+"require": {
+    "johnpbloch/wordpress": "^5.4",
+    "wpackagist-theme/twentynineteen": "*", // La petite astérisque réprésente la denière version du thème
+    "wpackagist-plugin/hello-dolly": "*"
+}, 
+```
+(Ce sera pareil pour les plugins.)
+
+
+Il faut aussi dire à composer qu'il doit nous installer ce theme dans notre dossier /content/, donc dans `extra` : 
+
+```
+ "extra": {
+    "wordpress-install-dir": "wp",
+    "installer-paths": {
+        "content/plugins/{$name}/": ["type:wordpress-plugin"],
+        "content/themes/{$name}/": ["type:wordpress-theme"]
+    }
+}
+```
+
+On supprime /wp/, /vendor/, un petit `composer install`, un `composer update` (pour mettre à jour notre composer.json) et le tour est joué.
+
+**NB :** Si vous ne voulez pas versionner les thèmes propres à WP, n'oubliez pas de le préciser dans le .gitignore
+
+**Voilà, nous avons notre pattern de Wordpress. Vous n'aurez plus qu'à le cloner, `composer install` et c'est parti ! /o/**
